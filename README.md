@@ -17,8 +17,11 @@ MapReduce. Por quê?</h3>
 <p>A agregação usando o reduzByKey executa uma operação como parâmetros em todos os elementos da mesma chave e cada partição pode obter um resultado parcial antes de passar esses dados aos executores irão calcular o resultado final, resultando em um conjunto menor de dados. Por outro lado, ao usar groupByKey, o cálculo parcial do resultado não é realizado. Assim, uma quantidade muito maior de dados é desnecessariamente transferida entre os executores criando a necessidade de gravar dados no disco e resultando em um impacto negativo muito significativo no desempenho.</p>
 
 <h3>Explique o que o código Scala abaixo faz.</h3>
-<code>val textFile = sc.textFile("hdfs://...")
-val counts = textFile.flatMap(line => line.split(" "))
-.map(word => (word, 1))
-.reduceByKey(_ + _)
-counts.saveAsTextFile("hdfs://...")</code>
+<code>val textFile = sc.textFile( "hdfs://..." )
+val counts = textFile.flatMap( line =&gt; line . split ( " " ))
+    .map( word =&gt; ( word , 1 ))
+    .reduceByKey( _ + _ )
+counts.saveAsTextFile( "hdfs://..." )
+</code>
+
+<p>Ocorre a leitura de um arquivo texto e separado palavra por palavra. Após isso, ocorre o mapeamento chave valor, sendo a palavra a chave e o valor 1. Logo em seguida, há um redução onde são contadas as palavras e o resultado é salvo.</p>
