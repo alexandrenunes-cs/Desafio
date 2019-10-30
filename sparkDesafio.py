@@ -15,14 +15,14 @@ july = july.cache()
 august = sc.textFile('access_log_Aug95')
 august = august.cache()
 
-# Hosts Distintos
+# Número de hosts únicos.
 july_count = july.flatMap(lambda line: line.split(' ')[0]).distinct().count()
 august_count = august.flatMap(lambda line: line.split(' ')[0]).distinct().count()
 print('Host distintos em Julho: %s' % july_count)
 print('Host distintos em Agosto %s' % august_count)
 
 
-# Erro 404
+# O total de erros 404.
 def response_code_404(line):
     try:
         code = line.split(' ')[-2]
@@ -39,13 +39,13 @@ print('404 erros em Julho: %s' % july_404.count())
 print('404 erros em Agosto %s' % august_404.count())
 
 
-# 5 endpoints mais frequentes
+# Os 5 URLs que mais causaram erro 404.
 def top5_endpoints(rdd):
     endpoints = rdd.map(lambda line: line.split('"')[1].split(' ')[1])
     counts = endpoints.map(lambda endpoint: (endpoint, 1)).reduceByKey(add)
     top = counts.sortBy(lambda pair: -pair[1]).take(5)
     
-    print('\nOs 5 principais endpoints 404 mais frequentes:')
+    print('\nOs 5 URLs que mais causaram erro 404.:')
     for endpoint, count in top:
         print(endpoint, count)
         
@@ -55,12 +55,12 @@ top5_endpoints(july_404)
 top5_endpoints(august_404)
 
 
-# 404 erros por dia
+# Quantidade de erros 404 por dia
 def daily_count(rdd):
     days = rdd.map(lambda line: line.split('[')[1].split(':')[0])
     counts = days.map(lambda day: (day, 1)).reduceByKey(add).collect()
     
-    print('\n404 erros por dia:')
+    print('\nQuantidade de erros 404 por dia:')
     for day, count in counts:
         print(day, count)
         
@@ -70,7 +70,7 @@ daily_count(july_404)
 daily_count(august_404)
 
 
-# Total byte
+# O total de bytes retornados
 def accumulated_byte_count(rdd):
     def byte_count(line):
         try:
@@ -84,8 +84,8 @@ def accumulated_byte_count(rdd):
     count = rdd.map(byte_count).reduce(add)
     return count
 
-print('Total byte em Julho: %s' % accumulated_byte_count(july))
-print('Total byte em Agosto: %s' % accumulated_byte_count(august))
+print('O total de bytes retornados em Julho: %s' % accumulated_byte_count(july))
+print('O total de bytes retornados em Agosto: %s' % accumulated_byte_count(august))
 
 
 sc.stop()
